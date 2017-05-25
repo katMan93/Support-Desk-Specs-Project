@@ -1,0 +1,476 @@
+<html>
+<body>
+<h1 id="OpSys"></h1>
+</body>
+<script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+<script src="https://www.java.com/js/deployJava.js"></script>
+
+<script>
+	/**
+ * JavaScript Client Detection
+ * (C) viazenetti GmbH (Christian Ludwig)
+ */
+(function (window) {
+    {
+        var unknown = '-';
+
+        // screen
+        var screenSize = '';
+        if (screen.width) {
+            width = (screen.width) ? screen.width : '';
+            height = (screen.height) ? screen.height : '';
+            screenSize += '' + width + " x " + height;
+        }
+
+        // browser
+        var nVer = navigator.appVersion;
+        var nAgt = navigator.userAgent;
+        var browser = navigator.appName;
+        var version = '' + parseFloat(navigator.appVersion);
+        var majorVersion = parseInt(navigator.appVersion, 10);
+        var nameOffset, verOffset, ix;
+
+        // Opera
+        if ((verOffset = nAgt.indexOf('Opera')) != -1) {
+            browser = 'Opera';
+            version = nAgt.substring(verOffset + 6);
+            if ((verOffset = nAgt.indexOf('Version')) != -1) {
+                version = nAgt.substring(verOffset + 8);
+            }
+        }
+        // Opera Next
+        if ((verOffset = nAgt.indexOf('OPR')) != -1) {
+            browser = 'Opera';
+            version = nAgt.substring(verOffset + 4);
+        }
+        // Edge
+        else if ((verOffset = nAgt.indexOf('Edge')) != -1) {
+            browser = 'Microsoft Edge';
+            version = nAgt.substring(verOffset + 5);
+        }
+        // MSIE
+        else if ((verOffset = nAgt.indexOf('MSIE')) != -1) {
+            browser = 'Microsoft Internet Explorer';
+            version = nAgt.substring(verOffset + 5);
+        }
+        // Chrome
+        else if ((verOffset = nAgt.indexOf('Chrome')) != -1) {
+            browser = 'Chrome';
+            version = nAgt.substring(verOffset + 7);
+        }
+        // Safari
+        else if ((verOffset = nAgt.indexOf('Safari')) != -1) {
+            browser = 'Safari';
+            version = nAgt.substring(verOffset + 7);
+            if ((verOffset = nAgt.indexOf('Version')) != -1) {
+                version = nAgt.substring(verOffset + 8);
+            }
+        }
+        // Firefox
+        else if ((verOffset = nAgt.indexOf('Firefox')) != -1) {
+            browser = 'Firefox';
+            version = nAgt.substring(verOffset + 8);
+        }
+        // MSIE 11+
+        else if (nAgt.indexOf('Trident/') != -1) {
+            browser = 'Microsoft Internet Explorer';
+            version = nAgt.substring(nAgt.indexOf('rv:') + 3);
+        }
+        // Other browsers
+        else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) < (verOffset = nAgt.lastIndexOf('/'))) {
+            browser = nAgt.substring(nameOffset, verOffset);
+            version = nAgt.substring(verOffset + 1);
+            if (browser.toLowerCase() == browser.toUpperCase()) {
+                browser = navigator.appName;
+            }
+        }
+        // trim the version string
+        if ((ix = version.indexOf(';')) != -1) version = version.substring(0, ix);
+        if ((ix = version.indexOf(' ')) != -1) version = version.substring(0, ix);
+        if ((ix = version.indexOf(')')) != -1) version = version.substring(0, ix);
+
+        majorVersion = parseInt('' + version, 10);
+        if (isNaN(majorVersion)) {
+            version = '' + parseFloat(navigator.appVersion);
+            majorVersion = parseInt(navigator.appVersion, 10);
+        }
+
+        // mobile version
+        var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer);
+
+        // cookie
+        var cookieEnabled = (navigator.cookieEnabled) ? true : false;
+
+        if (typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {
+            document.cookie = 'testcookie';
+            cookieEnabled = (document.cookie.indexOf('testcookie') != -1) ? true : false;
+        }
+
+        // system
+        var os = unknown;
+        var clientStrings = [
+            {s:'Windows 10', r:/(Windows 10.0|Windows NT 10.0)/},
+            {s:'Windows 8.1', r:/(Windows 8.1|Windows NT 6.3)/},
+            {s:'Windows 8', r:/(Windows 8|Windows NT 6.2)/},
+            {s:'Windows 7', r:/(Windows 7|Windows NT 6.1)/},
+            {s:'Windows Vista', r:/Windows NT 6.0/},
+            {s:'Windows Server 2003', r:/Windows NT 5.2/},
+            {s:'Windows XP', r:/(Windows NT 5.1|Windows XP)/},
+            {s:'Windows 2000', r:/(Windows NT 5.0|Windows 2000)/},
+            {s:'Windows ME', r:/(Win 9x 4.90|Windows ME)/},
+            {s:'Windows 98', r:/(Windows 98|Win98)/},
+            {s:'Windows 95', r:/(Windows 95|Win95|Windows_95)/},
+            {s:'Windows NT 4.0', r:/(Windows NT 4.0|WinNT4.0|WinNT|Windows NT)/},
+            {s:'Windows CE', r:/Windows CE/},
+            {s:'Windows 3.11', r:/Win16/},
+            {s:'Android', r:/Android/},
+            {s:'Open BSD', r:/OpenBSD/},
+            {s:'Sun OS', r:/SunOS/},
+            {s:'Linux', r:/(Linux|X11)/},
+            {s:'iOS', r:/(iPhone|iPad|iPod)/},
+            {s:'Mac OS X', r:/Mac OS X/},
+            {s:'Mac OS', r:/(MacPPC|MacIntel|Mac_PowerPC|Macintosh)/},
+            {s:'QNX', r:/QNX/},
+            {s:'UNIX', r:/UNIX/},
+            {s:'BeOS', r:/BeOS/},
+            {s:'OS/2', r:/OS\/2/},
+            {s:'Search Bot', r:/(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/}
+        ];
+        for (var id in clientStrings) {
+            var cs = clientStrings[id];
+            if (cs.r.test(nAgt)) {
+                os = cs.s;
+                break;
+            }
+        }
+
+        var osVersion = unknown;
+
+        if (/Windows/.test(os)) {
+            osVersion = /Windows (.*)/.exec(os)[1];
+            os = 'Windows';
+        }
+
+        switch (os) {
+            case 'Mac OS X':
+                osVersion = /Mac OS X (10[\.\_\d]+)/.exec(nAgt)[1];
+                break;
+
+            case 'Android':
+                osVersion = /Android ([\.\_\d]+)/.exec(nAgt)[1];
+                break;
+
+            case 'iOS':
+                osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer);
+                osVersion = osVersion[1] + '.' + osVersion[2] + '.' + (osVersion[3] | 0);
+                break;
+        }
+
+       //Get Java Version
+
+       var JavaVersion = unknown;
+        if(navigator.javaEnabled() === true){
+        	JavaVersion = deployJava.getJREs(); 
+                  	
+        }
+        if(JavaVersion = 0){
+                JavaVersion = false;
+            } 
+        else{
+            JavaVersion = false;
+        	//document.location.href="https://java.com/en/download/";
+        }
+     /*   
+	*/
+        // flash (you'll need to include swfobject)
+        /* script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" */
+        
+        /*var flashVersion = '';
+        if (typeof swfobject != 'undefined') {
+            var fv = swfobject.getFlashPlayerVersion();
+            if (fv.major > 0) {
+                flashVersion = fv.major + '.' + fv.minor + ' r' + fv.release;
+            }
+            else  {
+                flashVersion = unknown;
+            }
+        } */
+
+    var FlashDetect = new function(){
+    var self = this;
+    self.installed = false;
+    self.raw = "";
+    self.major = -1;
+    self.minor = -1;
+    self.revision = -1;
+    self.revisionStr = "";
+    var activeXDetectRules = [
+        {
+            "name":"ShockwaveFlash.ShockwaveFlash.7",
+            "version":function(obj){
+                return getActiveXVersion(obj);
+            }
+        },
+        {
+            "name":"ShockwaveFlash.ShockwaveFlash.6",
+            "version":function(obj){
+                var version = "6,0,21";
+                try{
+                    obj.AllowScriptAccess = "always";
+                    version = getActiveXVersion(obj);
+                }catch(err){}
+                return version;
+            }
+        },
+        {
+            "name":"ShockwaveFlash.ShockwaveFlash",
+            "version":function(obj){
+                return getActiveXVersion(obj);
+            }
+        }
+    ];
+    /**
+     * Extract the ActiveX version of the plugin.
+     * 
+     * @param {Object} The flash ActiveX object.
+     * @type String
+     */
+    var getActiveXVersion = function(activeXObj){
+        var version = -1;
+        try{
+            version = activeXObj.GetVariable("$version");
+        }catch(err){}
+        return version;
+    };
+    /**
+     * Try and retrieve an ActiveX object having a specified name.
+     * 
+     * @param {String} name The ActiveX object name lookup.
+     * @return One of ActiveX object or a simple object having an attribute of activeXError with a value of true.
+     * @type Object
+     */
+    var getActiveXObject = function(name){
+        var obj = -1;
+        try{
+            obj = new ActiveXObject(name);
+        }catch(err){
+            obj = {activeXError:true};
+        }
+        return obj;
+    };
+    /**
+     * Parse an ActiveX $version string into an object.
+     * 
+     * @param {String} str The ActiveX Object GetVariable($version) return value. 
+     * @return An object having raw, major, minor, revision and revisionStr attributes.
+     * @type Object
+     */
+    var parseActiveXVersion = function(str){
+        var versionArray = str.split(",");//replace with regex
+        return {
+            "raw":str,
+            "major":parseInt(versionArray[0].split(" ")[1], 10),
+            "minor":parseInt(versionArray[1], 10),
+            "revision":parseInt(versionArray[2], 10),
+            "revisionStr":versionArray[2]
+        };
+    };
+    /**
+     * Parse a standard enabledPlugin.description into an object.
+     * 
+     * @param {String} str The enabledPlugin.description value.
+     * @return An object having raw, major, minor, revision and revisionStr attributes.
+     * @type Object
+     */
+    var parseStandardVersion = function(str){
+        var descParts = str.split(/ +/);
+        var majorMinor = descParts[2].split(/\./);
+        var revisionStr = descParts[3];
+        return {
+            "raw":str,
+            "major":parseInt(majorMinor[0], 10),
+            "minor":parseInt(majorMinor[1], 10), 
+            "revisionStr":revisionStr,
+            "revision":parseRevisionStrToInt(revisionStr)
+        };
+    };
+    /**
+     * Parse the plugin revision string into an integer.
+     * 
+     * @param {String} The revision in string format.
+     * @type Number
+     */
+    var parseRevisionStrToInt = function(str){
+        return parseInt(str.replace(/[a-zA-Z]/g, ""), 10) || self.revision;
+    };
+    /**
+     * Is the major version greater than or equal to a specified version.
+     * 
+     * @param {Number} version The minimum required major version.
+     * @type Boolean
+     */
+    self.majorAtLeast = function(version){
+        return self.major >= version;
+    };
+    /**
+     * Is the minor version greater than or equal to a specified version.
+     * 
+     * @param {Number} version The minimum required minor version.
+     * @type Boolean
+     */
+    self.minorAtLeast = function(version){
+        return self.minor >= version;
+    };
+    /**
+     * Is the revision version greater than or equal to a specified version.
+     * 
+     * @param {Number} version The minimum required revision version.
+     * @type Boolean
+     */
+    self.revisionAtLeast = function(version){
+        return self.revision >= version;
+    };
+    /**
+     * Is the version greater than or equal to a specified major, minor and revision.
+     * 
+     * @param {Number} major The minimum required major version.
+     * @param {Number} (Optional) minor The minimum required minor version.
+     * @param {Number} (Optional) revision The minimum required revision version.
+     * @type Boolean
+     */
+    self.versionAtLeast = function(major){
+        var properties = [self.major, self.minor, self.revision];
+        var len = Math.min(properties.length, arguments.length);
+        for(i=0; i<len; i++){
+            if(properties[i]>=arguments[i]){
+                if(i+1<len && properties[i]==arguments[i]){
+                    continue;
+                }else{
+                    return true;
+                }
+            }else{
+                return false;
+            }
+        }
+    };
+    /**
+     * Constructor, sets raw, major, minor, revisionStr, revision and installed public properties.
+     */
+    self.FlashDetect = function(){
+        if(navigator.plugins && navigator.plugins.length>0){
+            var type = 'application/x-shockwave-flash';
+            var mimeTypes = navigator.mimeTypes;
+            if(mimeTypes && mimeTypes[type] && mimeTypes[type].enabledPlugin && mimeTypes[type].enabledPlugin.description){
+                var version = mimeTypes[type].enabledPlugin.description;
+                var versionObj = parseStandardVersion(version);
+                self.raw = versionObj.raw;
+                self.major = versionObj.major;
+                self.minor = versionObj.minor; 
+                self.revisionStr = versionObj.revisionStr;
+                self.revision = versionObj.revision;
+                self.installed = true;
+            }
+        }else if(navigator.appVersion.indexOf("Mac")==-1 && window.execScript){
+            var version = -1;
+            for(var i=0; i<activeXDetectRules.length && version==-1; i++){
+                var obj = getActiveXObject(activeXDetectRules[i].name);
+                if(!obj.activeXError){
+                    self.installed = true;
+                    version = activeXDetectRules[i].version(obj);
+                    if(version!=-1){
+                        var versionObj = parseActiveXVersion(version);
+                        self.raw = versionObj.raw;
+                        self.major = versionObj.major;
+                        self.minor = versionObj.minor; 
+                        self.revision = versionObj.revision;
+                        self.revisionStr = versionObj.revisionStr;
+                    }
+                }
+            }
+        }
+    }();
+};
+		
+		var flashVersion = ' ';
+		if(FlashDetect.installed){
+			flashVersion = ( FlashDetect.major + '.' + FlashDetect.minor);
+		}
+		else{
+			//flashVersion = ('ERROR, No Flash installed.' + '/n' + 'Install Flash at: ' + 'https://get.adobe.com/flashplayer/');
+            flashVersion = false;
+		}
+
+
+		
+		
+    }
+
+
+    //detection for popup windows
+
+  /*  var windowName = 'userConsole'; 
+    var popupTest = unknown;
+    var popUp = window.open('https://www.google.com', windowName, 'width=1000, height=700, left=24, top=24, scrollbars, resizable');
+    if (popUp == null || typeof(popUp)=='undefined') {  
+        popupTest = false; 
+        document.write('IE is dumb');
+    } else {  
+        document.write('Its enabled');
+        javascript:self.close();
+        popupTest = true;
+    }
+
+*/
+    var popupTest = unknown;
+    var href= "http://google.com",
+        popUp = window.open(href, '_blank' );
+    
+    if (popUp === null || typeof popUp === "undefined") {
+        popupTest = false; 
+        document.write('Its disabled');
+    } else {
+         document.write('Its enabled');
+        self.close();
+        popupTest = true;
+    }
+
+    window.jscd = {
+        screen: screenSize,
+        browser: browser,
+        browserVersion: version,
+        browserMajorVersion: majorVersion,
+        mobile: mobile,
+        os: os,
+        osVersion: osVersion,
+        cookies: cookieEnabled,
+        javaCheck: JavaVersion,
+        flashVersion: flashVersion,
+        popUpTest: popupTest
+    };
+}(this));
+
+
+// alert(
+//     'Operating System: ' + jscd.os +' '+ jscd.osVersion + '\n' +
+//     'Browser: ' + jscd.browser +' '+ jscd.browserMajorVersion +
+//       ' (' + jscd.browserVersion + ')\n' + 
+//     'Mobile: ' + jscd.mobile + '\n' +
+//     'Java Version: ' + String(jscd.javaCheck).charAt(2) + '\n' +
+//     //'Java on Browser Version: ' + jscd.javaCheck + '\n' +
+//     'Flash Version: ' + jscd.flashVersion + '\n' +
+//     'Cookies Enabled: ' + jscd.cookies + '\n' +
+//     'Popups Enabled: ' + jscd.popUpTest + '\n' +
+//     'Full User Agent: ' + navigator.userAgent
+// );
+
+
+// document.getElementById('OpSys').innerHTML =  "Operating System: " + jscd.os +' '+ jscd.osVersion;
+var doc = document;
+alert(doc.innerHTML);
+
+var opSysElm = document.getElementById("OpSys");
+alert(opSysElm);
+opSysElm.innerHTML = "Operating System: " + jscd.os +' '+ jscd.osVersion;
+</script>
+
+</html>
