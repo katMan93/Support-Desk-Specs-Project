@@ -1,6 +1,24 @@
 <html>
+
+<!-- 
+    This section is the HTML Portion
+    Be sure to edit this section in order for the page to look and function correctly.
+
+    Goal is to have each process / variable dispaly and their value (ex: true or false)
+    If  true, have a check mark display if possible
+    If false, display an error icon and have prompt and possible button display in order for the user to update said section.
+-->
 <body>
+
 <h1 id="OpSys"></h1>
+<h1 id="Bowser"></h1>
+<h1 id="phone"></h1>
+<h1 id="JavaVerCheck"></h1>
+<h1 id="flashVerCheck"></h1>
+<h1 id="cookieCheck"></h1>
+<h1 id="popUpCheck"></h1>
+<h1 id="fullUser"></h1>
+
 </body>
 <script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 <script src="https://www.java.com/js/deployJava.js"></script>
@@ -429,9 +447,10 @@
         popupTest = false; 
         document.write('Its disabled');
     } else {
+         popupTest = true;
          document.write('Its enabled');
         self.close();
-        popupTest = true;
+        
     }
 
     window.jscd = {
@@ -464,13 +483,33 @@
 // );
 
 
-// document.getElementById('OpSys').innerHTML =  "Operating System: " + jscd.os +' '+ jscd.osVersion;
-var doc = document;
-alert(doc.innerHTML);
+//Entire section is where the variables are ready to be based to their HTML counterparts
 
 var opSysElm = document.getElementById("OpSys");
-alert(opSysElm);
 opSysElm.innerHTML = "Operating System: " + jscd.os +' '+ jscd.osVersion;
+
+var browse = document.getElementById("Bowser");
+browse.innerHTML = "Browser: " + jscd.browser +' '+ jscd.browserMajorVersion;
+
+var phone = document.getElementById("phone");
+phone.innerHTML = "Mobile: " + jscd.mobile;
+
+var jVersion = document.getElementById("JavaVerCheck");
+//jVersion.innerHTML = "Java Version on Browser: " + String(jscd.javaCheck).charAt(2);
+jVersion.innerHTML = "Java Version on Browser: " +  jscd.javaCheck;
+
+var flashCheck = document.getElementById("flashVerCheck");
+flashCheck.innerHTML = "Flash Version: " + jscd.flashVersion;
+
+var cookCheck = document.getElementById("cookieCheck");
+cookCheck.innerHTML = "Cookies Enabled: " + jscd.cookies;
+
+var popCheck = document.getElementById("popUpCheck");
+popCheck.innerHTML = "Popups Enabled: " + jscd.popupTest;
+
+var totalReport = document.getElementById("fullUser");
+totalReport.innerHTML = "Full User Agent: " + navigator.userAgent;
+
 </script>
 
 </html>
